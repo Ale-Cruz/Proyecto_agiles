@@ -1,0 +1,11 @@
+{% extends 'cafeteria/panel.html' %}
+{% block title %}Auditoría · Cafetería{% endblock %}
+{% block panel_content %}
+<div class="page-heading employee-heading">
+  <div><span class="eyebrow">ADMINISTRACIÓN</span><h1>Auditoría</h1><p class="page-description">Consulta las operaciones y sus responsables.</p></div>
+</div>
+<div id="audit-feedback" class="employee-feedback feedback-error" role="alert" hidden></div>
+<div id="audit-list-history" hx-history-elt>
+  {% include 'cafeteria/auditoria/_listado.html' %}
+</div>
+{% endblock %}

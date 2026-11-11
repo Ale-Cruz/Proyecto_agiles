@@ -1,0 +1,53 @@
+{% extends 'cafeteria/base.html' %}
+{% block title %}Inicio · Cafetería{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+{% block content %}
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+<button class="sidebar-overlay" type="button" aria-label="Cerrar menú"></button>
+<aside class="panel-sidebar" id="menu-lateral" aria-label="Menú principal">
+  <a class="brand" href="{% url 'dashboard' %}"><span class="brand-mark"><svg class="icon"><use href="#i-coffee"/></svg></span><span>Cafetería ITCA</span></a>
+  <span class="nav-label">ESPACIO DE TRABAJO</span>
+  <nav class="panel-nav">
+    <a href="{% url 'dashboard' %}" class="nav-item {% if seccion == 'inicio' %}active{% endif %}" {% if seccion == 'inicio' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-home"/></svg> Inicio {% if seccion == 'inicio' %}<span class="active-dot"></span>{% endif %}</a>
+    <span class="nav-label modules-label">MÓDULOS</span>
+    {% for icono, nombre, descripcion, color in modulos %}
+    {% if icono == 'box' %}
+    <details class="nav-group" {% if inventario_abierto %}open{% endif %}>
+      <summary class="nav-item {% if inventario_abierto %}group-active{% endif %}"><svg class="icon"><use href="#i-box"/></svg>Inventario<svg class="icon submenu-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></summary>
+      <div class="nav-submenu">
+        <a href="{% url 'productos_lista' %}" class="submenu-item {% if seccion == 'productos' %}active{% endif %}" {% if seccion == 'productos' %}aria-current="page"{% endif %}>Productos</a>
+        <a href="{% url 'categorias_lista' %}" class="submenu-item {% if seccion == 'categorias' %}active{% endif %}" {% if seccion == 'categorias' %}aria-current="page"{% endif %}>Categorías</a>
+        <a href="{% url 'inventario_lista' %}" class="submenu-item {% if seccion == 'inventario' %}active{% endif %}" {% if seccion == 'inventario' %}aria-current="page"{% endif %}>Inventario</a>
+      </div>
+    </details>
+    {% elif icono == 'sales' %}
+    <a href="{% url 'pos_inicio' %}" class="nav-item {% if seccion == 'pos' %}active{% endif %}" {% if seccion == 'pos' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-sales"/></svg>{{ nombre }}{% if seccion == 'pos' %}<span class="active-dot"></span>{% endif %}</a>
+    {% elif icono == 'clipboard' %}
+    <a href="{% url 'pedidos_lista' %}" class="nav-item {% if seccion == 'pedidos' %}active{% endif %}" {% if seccion == 'pedidos' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-clipboard"/></svg>{{ nombre }}{% if seccion == 'pedidos' %}<span class="active-dot"></span>{% endif %}</a>
+    {% elif icono == 'users' %}
+    <a href="{% url 'usuarios_lista' %}" class="nav-item {% if seccion == 'usuarios' %}active{% endif %}" {% if seccion == 'usuarios' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-users"/></svg>{{ nombre }}{% if seccion == 'usuarios' %}<span class="active-dot"></span>{% endif %}</a>
+    {% elif icono == 'shield' %}
+    <a href="{% url 'auditoria_lista' %}" class="nav-item {% if seccion == 'auditoria' %}active{% endif %}" {% if seccion == 'auditoria' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-shield"/></svg>{{ nombre }}{% if seccion == 'auditoria' %}<span class="active-dot"></span>{% endif %}</a>
+    {% elif icono == 'chart' %}
+    <a href="{% url 'reportes_inicio' %}" class="nav-item {% if seccion == 'reportes' %}active{% endif %}" {% if seccion == 'reportes' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-chart"/></svg>{{ nombre }}{% if seccion == 'reportes' %}<span class="active-dot"></span>{% endif %}</a>
+    {% elif icono == 'settings' %}
+    <a href="{% url 'configuracion_horario' %}" class="nav-item {% if seccion == 'configuracion' %}active{% endif %}" {% if seccion == 'configuracion' %}aria-current="page"{% endif %}><svg class="icon"><use href="#i-settings"/></svg>{{ nombre }}{% if seccion == 'configuracion' %}<span class="active-dot"></span>{% endif %}</a>
+    {% else %}
+    <button class="nav-item" type="button" disabled title="{{ nombre }}: próximamente"><svg class="icon"><use href="#i-{{ icono }}"/></svg>{{ nombre }}</button>
+    {% endif %}
+    {% endfor %}
+  </nav>
+</aside>
+<div class="panel-main">
+  <header class="panel-topbar">
+    <button type="button" class="menu-toggle" aria-controls="menu-lateral" aria-expanded="false" aria-label="Abrir menú"><svg class="icon"><use href="#i-menu"/></svg></button>
+    <div class="topbar-greeting">Hola, <strong data-current-user-name>{{ request.user.nombre }}</strong><small>Bienvenido a tu espacio de trabajo</small></div>
+    <span class="topbar-profile" title="{{ request.user.nombre }} · {{ request.user.get_rol_display }}"><span class="avatar-initial" data-current-user-initial>{{ request.user.nombre|first|upper }}</span></span>
+    <form method="post" action="{% url 'logout' %}" class="logout-form">{% csrf_token %}<button type="submit" class="btn logout-button"><svg class="icon"><use href="#i-logout"/></svg><span>Cerrar sesión</span></button></form>
+  </header>
+  <main class="dashboard-content" id="contenido">
+    {% if messages %}{% for message in messages %}<div class="{% if message.tags == 'error' %}form-alert{% else %}notice-success{% endif %}" role="{% if message.tags == 'error' %}alert{% else %}status{% endif %}">{{ message }}</div>{% endfor %}{% endif %}
+    {% block panel_content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

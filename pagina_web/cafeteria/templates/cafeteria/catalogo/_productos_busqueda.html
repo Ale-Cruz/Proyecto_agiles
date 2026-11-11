@@ -1,0 +1,3 @@
+{% for producto in productos_encontrados %}
+<button type="button" class="inventory-product-result" hx-get="{% url 'inventario_producto_info' %}?producto={{ producto.pk }}" hx-target="#stock-info" hx-swap="innerHTML" hx-sync="#inventory-product-picker:replace"><span><strong>{{ producto.nombre }}</strong><small>{{ producto.codigo }}</small></span><span>Seleccionar</span></button>
+{% empty %}<p class="inventory-product-empty">{% if consulta_producto %}No se encontraron productos.{% else %}Escribe el nombre o código del producto.{% endif %}</p>{% endfor %}

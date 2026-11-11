@@ -1,0 +1,7 @@
+{% extends 'cafeteria/panel.html' %}
+{% block title %}{{ titulo_formulario }} · Cafetería{% endblock %}
+{% block panel_content %}
+<a href="{{ url_lista }}" class="back-link">← {{ titulo }}</a>
+<div class="page-heading"><h1>{{ titulo_formulario }}</h1></div>
+{% include 'cafeteria/catalogo/_formulario.html' %}
+{% endblock %}

@@ -1,0 +1,4 @@
+{% load static %}
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Factura {{ venta.numero }} · Cafetería ITCA</title><link rel="icon" href="{% static 'cafeteria/favicon.svg' %}" type="image/svg+xml"><link rel="stylesheet" href="{% static 'cafeteria/factura.css' %}?v=1"><script src="{% static 'cafeteria/factura.js' %}?v=1" defer></script></head>
+<body class="invoice-page"><nav class="invoice-toolbar" aria-label="Acciones de la factura"><a href="{% url 'pos_inicio' %}">Punto de venta</a><button type="button" data-print-invoice>Imprimir</button></nav><main>{% include 'cafeteria/pos/_factura.html' %}</main></body></html>

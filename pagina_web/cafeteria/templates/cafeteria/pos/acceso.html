@@ -1,0 +1,21 @@
+{% extends 'cafeteria/pos/base.html' %}
+{% block pos_content %}
+<div class="page-heading"><h1>Punto de venta</h1></div>
+<section class="pos-gate">
+  <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-sales"/></svg></span>
+  {% if apertura %}<h2>Caja en uso</h2><p><strong>{{ apertura.abierta_por.nombre }}</strong> tiene una apertura activa.</p><p>Debe cerrarla para que puedas abrir la tuya.</p><a class="btn cancel-button" href="{% url 'pos_inicio' %}">Verificar disponibilidad</a>
+  {% else %}<h2>Abrir caja</h2><button class="btn primary-button" type="button" data-pos-open>Abrir caja</button>{% endif %}
+</section>
+{% if not apertura %}
+<dialog id="pos-opening" class="pos-dialog" aria-labelledby="pos-opening-title" data-open-required>
+  <div class="pos-dialog-heading"><h2 id="pos-opening-title">Abrir caja</h2><a class="modal-close-button" href="{% url 'dashboard' %}" aria-label="Volver al inicio">×</a></div>
+  <form id="pos-opening-form" data-url="{% url 'pos_abrir' %}">
+    {% csrf_token %}<input type="hidden" name="token" value="{{ token_apertura }}">
+    <div class="pos-dialog-error form-alert" role="alert" hidden></div>
+    <label class="pos-field-label" for="opening-amount">Monto inicial ($)</label>
+    <input id="opening-amount" class="form-control" name="monto" type="number" min="0" max="9999999999.99" step="0.01" required inputmode="decimal" placeholder="0.00" autofocus>
+    <div class="pos-dialog-actions"><a class="btn cancel-button" href="{% url 'dashboard' %}">Cancelar</a><button class="btn primary-button" type="submit">Abrir caja</button></div>
+  </form>
+</dialog>
+{% endif %}
+{% endblock %}

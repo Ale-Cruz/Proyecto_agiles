@@ -1,0 +1,7 @@
+{% extends 'cafeteria/panel.html' %}
+{% block title %}{% if es_nuevo %}Nuevo usuario{% else %}Editar usuario{% endif %} · Cafetería{% endblock %}
+{% block panel_content %}
+<a href="{% url 'usuarios_lista' %}" class="back-link">← Usuarios</a>
+<div class="page-heading employee-heading"><div><span class="eyebrow">ADMINISTRACIÓN</span><h1>{% if es_nuevo %}Nuevo usuario{% else %}Editar usuario{% endif %}</h1></div></div>
+{% include 'cafeteria/usuarios/_formulario.html' %}
+{% endblock %}

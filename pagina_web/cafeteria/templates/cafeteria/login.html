@@ -1,0 +1,30 @@
+{% extends 'cafeteria/base.html' %}
+{% block title %}Iniciar sesión · Cafetería{% endblock %}
+{% block body_class %}login-page{% endblock %}
+{% block content %}
+<main class="access-layout">
+  <section class="access-card" aria-label="Iniciar sesión">
+    <a class="brand access-brand" href="{% url 'login' %}" aria-label="Cafetería ITCA">
+      <span class="brand-mark"><svg class="icon"><use href="#i-coffee"/></svg></span>
+      <span>Cafetería ITCA</span>
+    </a>
+    <form method="post" action="{% url 'login' %}" class="access-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      {% if acceso_bloqueado %}<div class="form-alert" role="alert">Demasiados intentos. Espera 15 minutos antes de volver a intentar.</div>{% endif %}
+      {% if form.non_field_errors %}<div class="form-alert" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+      <div class="field-group">
+        <label for="{{ form.username.id_for_label }}">Usuario</label>
+        {{ form.username }}
+        {% if form.username.errors %}<div class="field-error" role="alert">{{ form.username.errors }}</div>{% endif %}
+      </div>
+      <div class="field-group">
+        <label for="{{ form.password.id_for_label }}">Contraseña</label>
+        <div class="password-field">{{ form.password }}<button type="button" class="password-toggle" aria-controls="id_password" aria-pressed="false">Mostrar</button></div>
+        {% if form.password.errors %}<div class="field-error" role="alert">{{ form.password.errors }}</div>{% endif %}
+      </div>
+      <button type="submit" class="btn login-submit">Iniciar sesión</button>
+    </form>
+  </section>
+</main>
+{% endblock %}

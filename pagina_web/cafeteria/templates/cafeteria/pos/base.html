@@ -1,0 +1,5 @@
+{% extends 'cafeteria/panel.html' %}
+{% load static %}
+{% block title %}Punto de venta · Cafetería ITCA{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'cafeteria/pedidos.css' %}"><link rel="stylesheet" href="{% static 'cafeteria/pos.css' %}?v=factura-1"><link rel="stylesheet" href="{% static 'cafeteria/factura.css' %}?v=1"><script src="{% static 'cafeteria/pos.js' %}?v=factura-1" defer></script><script src="{% static 'cafeteria/cobros.js' %}?v=factura-1" defer></script>{% endblock %}
+{% block panel_content %}{% block pos_content %}{% endblock %}{% endblock %}

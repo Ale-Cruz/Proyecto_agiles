@@ -1,0 +1,14 @@
+<form class="order-ticket {% if es_listo %}order-ticket-ready{% endif %}" method="post" action="{% url 'pedidos_estado' pedido.pk %}" hx-post="{% url 'pedidos_estado' pedido.pk %}" hx-target="#orders-board" hx-swap="outerHTML" hx-sync="#orders-board:queue all" hx-disabled-elt="#orders-board button">
+  {% csrf_token %}
+  <input type="hidden" name="destino" value="{% if es_listo %}en_preparacion{% else %}listo{% endif %}">
+  <input type="hidden" name="version" value="{{ pedido.estado_actualizado_en.isoformat }}">
+  <button class="order-ticket-button" type="submit" aria-label="{% if es_listo %}Devolver a preparación{% else %}Marcar listo{% endif %} el pedido {{ pedido.numero }} de {{ pedido.estudiante.nombre }}">
+    <span class="ticket-top"><span class="ticket-status">{% if es_listo %}Listo{% else %}En preparación{% endif %}</span><span class="ticket-time">{% if es_listo %}{{ pedido.estado_actualizado_en|date:"d/m · H:i" }}{% else %}{{ pedido.creado_en|date:"d/m · H:i" }}{% endif %}</span></span>
+    <span class="ticket-number">{{ pedido.numero }}</span>
+    <span class="ticket-student">{{ pedido.estudiante.nombre }}</span>
+    <span class="ticket-items" role="list" aria-label="Productos del pedido">
+      {% for linea in pedido.lineas_comanda %}<span class="ticket-item" role="listitem"><b>{{ linea.cantidad }}×</b><span>{{ linea.producto.nombre }}</span></span>{% empty %}<span class="ticket-item">Sin productos registrados.</span>{% endfor %}
+    </span>
+    <span class="ticket-action">{% if es_listo %}Volver a preparación{% else %}Marcar como listo{% endif %}<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+  </button>
+</form>

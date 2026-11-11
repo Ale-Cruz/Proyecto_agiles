@@ -1,0 +1,8 @@
+<div class="order-ticket order-ticket-ready {% if demorado %}pickup-late{% endif %}">
+  <button class="order-ticket-button" type="button" data-pickup-url="{% url 'pos_pedido_resumen' pedido.pk %}" aria-label="Atender pedido {{ pedido.numero }} de {{ pedido.estudiante.nombre }}">
+    <span class="ticket-top"><span class="ticket-status">Listo</span><span class="ticket-time">{{ pedido.estado_actualizado_en|date:"d/m · H:i" }}</span></span>
+    <span class="ticket-number">{{ pedido.numero }}</span><span class="ticket-student">{{ pedido.estudiante.nombre }}</span>
+    <span class="ticket-items" role="list" aria-label="Productos del pedido">{% for linea in pedido.lineas_comanda %}<span class="ticket-item" role="listitem"><b>{{ linea.cantidad }}×</b><span>{{ linea.producto.nombre }}</span></span>{% empty %}<span class="ticket-item">Sin productos registrados.</span>{% endfor %}</span>
+    <span class="ticket-action"><span>{{ pedido.minutos_espera }} min en espera</span><span>Ver pedido →</span></span>
+  </button>
+</div>

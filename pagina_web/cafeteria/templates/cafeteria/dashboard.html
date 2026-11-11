@@ -1,0 +1,16 @@
+{% extends 'cafeteria/panel.html' %}
+{% block title %}Inicio · Cafetería{% endblock %}
+{% block panel_content %}
+    <div class="page-heading"><div><span class="eyebrow">VISTA GENERAL</span><h1>Inicio</h1></div><span class="today-date">{% now "j \d\e F \d\e Y" %}</span></div>
+    <section class="welcome-card" aria-labelledby="welcome-title">
+      <div class="welcome-copy"><h2 id="welcome-title">Todo listo para<br>una nueva jornada.</h2><p>Un espacio para cuidar los detalles<br class="desktop-break"> y hacer que tu cafetería funcione mejor.</p></div>
+      <div class="welcome-illustration" aria-hidden="true"><span class="illustration-orbit orbit-a"></span><span class="illustration-orbit orbit-b"></span><svg viewBox="0 0 300 240"><ellipse cx="150" cy="204" rx="100" ry="11" fill="#e5c9c3"/><rect x="71" y="80" width="113" height="112" rx="28" fill="#800000"/><path d="M184 97h15c40 0 40 58 0 58h-15" fill="none" stroke="#800000" stroke-width="14"/><ellipse cx="127" cy="80" rx="56" ry="12" fill="#630000"/><path d="M106 57c-17-20 11-25 0-43m30 43c-17-20 11-25 0-43m30 43c-17-20 11-25 0-43" stroke="#b38775" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M112 132h30m-15-15v30" stroke="#e8c990" stroke-width="5" stroke-linecap="round"/><path d="M54 198h173" stroke="#c69b63" stroke-width="6" stroke-linecap="round"/><path d="M212 194c0-26 11-39 27-38-1 23-10 35-27 38Z" fill="#9b6a5c"/><circle cx="55" cy="97" r="7" fill="#dfa575"/><circle cx="233" cy="70" r="5" fill="#c3a38e"/></svg></div>
+    </section>
+    <section class="modules-section" aria-labelledby="modules-title"><div class="section-heading"><div><h2 id="modules-title">Tu cafetería, en un solo lugar</h2><p>Accede a los módulos de la cafetería.</p></div></div>
+      <div class="module-grid">
+        {% for icono, nombre, descripcion, color in modulos %}
+        {% if icono == 'sales' %}<a href="{% url 'pos_inicio' %}" class="module-card module-enabled">{% elif icono == 'users' %}<a href="{% url 'usuarios_lista' %}" class="module-card module-enabled">{% elif icono == 'box' %}<a href="{% url 'productos_lista' %}" class="module-card module-enabled">{% elif icono == 'clipboard' %}<a href="{% url 'pedidos_lista' %}" class="module-card module-enabled">{% elif icono == 'shield' %}<a href="{% url 'auditoria_lista' %}" class="module-card module-enabled">{% elif icono == 'chart' %}<a href="{% url 'reportes_inicio' %}" class="module-card module-enabled">{% elif icono == 'settings' %}<a href="{% url 'configuracion_horario' %}" class="module-card module-enabled">{% else %}<article class="module-card">{% endif %}<span class="module-icon {{ color }}"><svg class="icon"><use href="#i-{{ icono }}"/></svg></span><div><h3>{{ nombre }}</h3><p>{{ descripcion }}</p></div><svg class="icon module-arrow"><use href="#i-arrow"/></svg>{% if icono == 'users' or icono == 'shield' or icono == 'box' or icono == 'clipboard' or icono == 'sales' or icono == 'chart' or icono == 'settings' %}</a>{% else %}</article>{% endif %}
+        {% endfor %}
+      </div>
+    </section>
+{% endblock %}

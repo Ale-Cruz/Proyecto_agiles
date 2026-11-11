@@ -1,0 +1,8 @@
+{% extends 'cafeteria/panel.html' %}
+{% block title %}{{ titulo }} · Cafetería{% endblock %}
+{% block panel_content %}
+<div class="page-heading employee-heading"><div><span class="eyebrow">INVENTARIO</span><h1>{{ titulo }}</h1><p class="page-description">{{ descripcion_pagina }}</p></div><a href="{{ url_nuevo }}" hx-get="{{ url_nuevo }}" hx-target="#module-modal-content" hx-swap="innerHTML" hx-sync="#module-modal:replace" class="btn primary-button" data-module-form-link aria-haspopup="dialog"><span aria-hidden="true">+</span> {{ boton_nuevo }}</a></div>
+<div id="module-feedback" class="employee-feedback" role="status" aria-live="polite" hidden></div>
+<div hx-history-elt>{% include 'cafeteria/catalogo/_listado.html' %}</div>
+<dialog id="module-modal" class="employee-modal" aria-labelledby="module-modal-title"><div id="module-modal-feedback" class="employee-feedback feedback-error" role="alert" hidden></div><div id="module-modal-content"></div></dialog>
+{% endblock %}

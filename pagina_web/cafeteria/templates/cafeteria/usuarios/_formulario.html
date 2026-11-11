@@ -1,0 +1,25 @@
+{% if es_modal %}
+<div class="employee-modal-heading">
+  <div><span class="eyebrow">EQUIPO</span><h2 id="employee-modal-title">{% if es_nuevo %}Nuevo usuario{% else %}Editar usuario{% endif %}</h2></div>
+  <button type="button" class="modal-close-button" data-modal-close aria-label="Cerrar formulario">×</button>
+</div>
+{% endif %}
+<form method="post" action="{{ request.path }}" class="employee-form-card" {% if es_modal %}hx-post="{{ request.path }}" hx-target="#employee-modal-content" hx-swap="innerHTML" hx-disabled-elt="#employee-modal button" hx-sync="this:drop"{% endif %}>
+  {% csrf_token %}
+  {% if empleado.es_cuenta_principal %}<input type="hidden" name="rol" value="administrador"><input type="hidden" name="habilitado" value="on">{% endif %}
+  {% if form.non_field_errors %}<div class="form-alert" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="form-section-heading"><h2>Datos de acceso</h2><p>El nombre de usuario se utiliza para iniciar sesión.</p></div>
+  <div class="employee-form-grid">
+    <div class="field-group"><label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>{{ form.nombre }}{% if form.nombre.errors %}<div class="field-error" role="alert">{{ form.nombre.errors }}</div>{% endif %}</div>
+    <div class="field-group"><label for="{{ form.correo.id_for_label }}">{{ form.correo.label }}</label>{{ form.correo }}{% if form.correo.errors %}<div class="field-error" role="alert">{{ form.correo.errors }}</div>{% endif %}</div>
+    <div class="field-group"><label for="{{ form.rol.id_for_label }}">{{ form.rol.label }}</label>{{ form.rol }}{% if form.rol.errors %}<div class="field-error" role="alert">{{ form.rol.errors }}</div>{% endif %}</div>
+    <div class="field-group account-state"><label class="account-checkbox" for="{{ form.habilitado.id_for_label }}">{{ form.habilitado }}<span>Cuenta habilitada<small>Permite iniciar sesión en el sistema.</small></span></label>{% if form.habilitado.errors %}<div class="field-error" role="alert">{{ form.habilitado.errors }}</div>{% endif %}</div>
+  </div>
+  {% if empleado.es_cuenta_principal %}<p class="self-account-note">Cuenta principal protegida. Siempre permanece habilitada como administrador. Puedes editar su correo y contraseña.</p>{% elif es_cuenta_propia %}<p class="self-account-note">Tu cuenta debe permanecer habilitada y conservar el rol de administrador.</p>{% endif %}
+  <div class="form-section-heading password-section"><h2>Contraseña</h2><p>{% if es_nuevo %}Usa al menos 8 caracteres y evita claves comunes.{% else %}Deja ambos campos vacíos para conservar la actual.{% endif %}</p></div>
+  <div class="employee-form-grid">
+    <div class="field-group"><label for="{{ form.password1.id_for_label }}">{% if es_nuevo %}Contraseña{% else %}Nueva contraseña{% endif %}</label><div class="password-field">{{ form.password1 }}<button type="button" class="password-toggle" aria-controls="{{ form.password1.id_for_label }}" aria-pressed="false">Mostrar</button></div>{% if form.password1.errors %}<div class="field-error" role="alert">{{ form.password1.errors }}</div>{% endif %}</div>
+    <div class="field-group"><label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label><div class="password-field">{{ form.password2 }}<button type="button" class="password-toggle" aria-controls="{{ form.password2.id_for_label }}" aria-pressed="false">Mostrar</button></div>{% if form.password2.errors %}<div class="field-error" role="alert">{{ form.password2.errors }}</div>{% endif %}</div>
+  </div>
+  <div class="employee-form-actions">{% if es_modal %}<button type="button" class="btn cancel-button" data-modal-close>Cancelar</button>{% else %}<a href="{% url 'usuarios_lista' %}" class="btn cancel-button">Cancelar</a>{% endif %}<button type="submit" class="btn primary-button"><span class="submit-label">{% if es_nuevo %}Crear usuario{% else %}Guardar cambios{% endif %}</span><span class="submit-loading">Guardando…</span></button></div>
+</form>

@@ -1,0 +1,15 @@
+<dialog id="pickup-dialog" class="pos-dialog pickup-dialog" aria-labelledby="pickup-title">
+  <div class="pos-dialog-heading"><div><h2 id="pickup-title">Pedido</h2><p id="pickup-student"></p></div><button class="modal-close-button" type="button" data-pickup-close aria-label="Cerrar resumen">×</button></div>
+  <form id="pickup-form">
+    <div class="pos-dialog-error form-alert" role="alert" hidden></div>
+    <div class="pickup-detail"><table class="pos-table"><thead><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Importe</th></tr></thead><tbody id="pickup-items"></tbody></table></div>
+    <label class="pos-field-label" for="pickup-action">Operación</label><select class="form-select" id="pickup-action"><option value="cobrar" selected>Cobrar</option><option value="anular">Anulación</option></select>
+    <div id="pickup-payment">
+      <dl class="pos-totals"><div><dt>Total sin IVA</dt><dd id="pickup-subtotal"></dd></div><div><dt>IVA (13 %)</dt><dd id="pickup-iva"></dd></div><div class="pos-grand-total"><dt>Total + IVA</dt><dd id="pickup-total"></dd></div></dl>
+      <label class="pos-field-label" for="pickup-cash">Efectivo recibido ($)</label><input class="form-control pos-cash-input" id="pickup-cash" type="number" min="0" max="9999999999.99" step="0.01" inputmode="decimal" placeholder="0.00" required>
+      <div class="pos-change" id="pickup-change-box" aria-live="polite"><span id="pickup-change-label">Cambio</span><strong id="pickup-change">—</strong></div>
+    </div>
+    <div id="pickup-cancellation" hidden><label class="pos-field-label" for="pickup-reason">Motivo de la anulación</label><textarea id="pickup-reason" class="form-control" maxlength="1000" rows="3" disabled></textarea></div>
+    <div class="pos-dialog-actions"><button class="btn cancel-button" type="button" data-pickup-close>Volver</button><button class="btn primary-button" id="pickup-submit" type="submit">Efectuar cobro</button></div>
+  </form>
+</dialog>

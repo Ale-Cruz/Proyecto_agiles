@@ -1,0 +1,53 @@
+# Configuración privada: publicar únicamente las plantillas.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.jks
+*.keystore
+key.properties
+
+# Entornos, dependencias y cachés.
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.dart_tool/
+.pub-cache/
+.pub/
+.gradle/
+node_modules/
+
+# Compilaciones, datos locales y copias privadas.
+build/
+dist/
+coverage/
+staticfiles/
+media/
+.local_backups/
+.build-tools/
+.build-logs/
+*.apk
+*.aab
+*.zip
+*.dump
+*.sql.gz
+*.sqlite3
+*.log
+*.pid
+
+# Ajustes de la PC y notas de validación local.
+.idea/
+.vscode/
+*.iml
+local.properties
+.DS_Store
+Thumbs.db
+PRUEBA_ANDROID.txt
+VALIDACION.txt
+REVISION_MOVIL.txt

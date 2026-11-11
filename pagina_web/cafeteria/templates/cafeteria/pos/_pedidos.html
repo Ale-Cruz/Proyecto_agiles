@@ -1,0 +1,7 @@
+<div id="pickup-board" hx-get="{% url 'pos_pedidos' %}?apertura={{ request.GET.apertura|urlencode }}" hx-include="#pickup-search" hx-trigger="pickupRefresh from:body, every 5s" hx-swap="outerHTML" hx-sync="this:replace">
+  {% if error_pedidos %}<div class="orders-message orders-message-error" role="alert">{{ error_pedidos }}</div>{% else %}
+  <div class="orders-section-heading"><h2><span class="orders-status-dot ready-dot"></span>Listos para recoger <span class="orders-count">{{ pedidos_recientes|length }}</span></h2></div>
+  <div class="orders-grid">{% for pedido in pedidos_recientes %}{% include 'cafeteria/pos/_pedido.html' %}{% empty %}<div class="orders-empty"><strong>{% if busqueda %}No hay pedidos que coincidan.{% else %}No hay pedidos listos recientes.{% endif %}</strong></div>{% endfor %}</div>
+  {% if pedidos_demorados %}<section class="orders-ready-section pickup-late-section"><div class="orders-section-heading"><h2><span class="orders-status-dot preparation-dot"></span>20 minutos o más sin recoger <span class="orders-count">{{ pedidos_demorados|length }}</span></h2></div><div class="orders-grid">{% for pedido in pedidos_demorados %}{% include 'cafeteria/pos/_pedido.html' with demorado=True %}{% endfor %}</div></section>{% endif %}
+  {% endif %}
+</div>

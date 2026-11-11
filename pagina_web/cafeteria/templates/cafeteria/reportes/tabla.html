@@ -1,0 +1,8 @@
+{% extends 'cafeteria/panel.html' %}{% load static %}
+{% block title %}{{ titulo_reporte }} · Reportes{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'cafeteria/reportes.css' %}?v=1"><script src="{% static 'cafeteria/reportes.js' %}?v=1" defer></script>{% endblock %}
+{% block panel_content %}
+<div class="page-heading"><div><a class="report-back" href="{% url 'reportes_inicio' %}">← Reportes</a><h1>{{ titulo_reporte }}</h1></div></div>
+<div id="report-feedback" class="employee-feedback feedback-error" role="alert" hidden>No se pudo actualizar el reporte. Intenta de nuevo.</div>
+<div hx-history-elt>{% include 'cafeteria/reportes/_listado.html' %}</div>
+{% endblock %}

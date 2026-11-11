@@ -1,0 +1,42 @@
+{% extends 'cafeteria/pos/base.html' %}
+{% block pos_content %}
+<div id="pos-app" data-apertura="{{ apertura.pk }}" data-usuario="{{ request.user.pk }}" data-productos="{% url 'pos_productos' %}" data-cotizar="{% url 'pos_cotizar' %}" data-cobrar="{% url 'pos_cobrar' %}" data-verificar="{% url 'pos_verificar_cierre' %}" data-cerrar="{% url 'pos_cerrar' %}" data-atender-pedido="{% url 'pos_pedido_atender' %}">
+  <div class="pos-tabs" role="tablist" aria-label="Operaciones del punto de venta"><button class="pos-tab active" type="button" id="pos-tab-sale" role="tab" aria-selected="true" aria-controls="pos-sale-pane">Realizar venta</button><button class="pos-tab" type="button" id="pos-tab-orders" role="tab" aria-selected="false" aria-controls="pos-orders-pane" tabindex="-1">Cobrar pedidos</button></div>
+  <section class="pos-workspace" aria-label="Punto de venta">
+    <header class="pos-header"><div><div class="pos-brand"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-coffee"/></svg></span><h1>Cafetería ITCA</h1></div><p>Fecha del día: {% now "d/m/Y" %}</p></div><div class="pos-cashier"><h2>Caja</h2><p>{{ apertura.abierta_por.nombre }}</p><button class="pos-close-link" type="button" id="pos-close-open">Cerrar caja</button></div></header>
+    <div id="pos-feedback" class="pos-feedback" role="status" hidden></div>
+    <div id="pos-sale-pane" role="tabpanel" aria-labelledby="pos-tab-sale">
+    <div class="pos-columns">
+      <div class="pos-products">
+        <div class="pos-search-area"><label class="pos-field-label" for="pos-search">Buscar producto</label><div class="pos-search-input"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="pos-search" type="search" class="form-control" autocomplete="off" placeholder="Nombre o código"></div><div id="pos-search-results" class="pos-search-results" role="region" aria-label="Productos encontrados" hidden></div></div>
+        <div class="pos-table-wrap"><table class="pos-table"><thead><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Importe</th><th><span class="visually-hidden">Quitar</span></th></tr></thead><tbody id="pos-items"></tbody></table><div id="pos-empty" class="pos-empty"><svg class="icon" aria-hidden="true"><use href="#i-sales"/></svg><p>Añade productos para comenzar.</p></div></div>
+      </div>
+      <aside class="pos-summary" aria-label="Total de la venta">
+        <h2>Resumen</h2><dl class="pos-totals"><div><dt>Total sin IVA</dt><dd id="pos-subtotal">$0.00</dd></div><div><dt>IVA (13 %)</dt><dd id="pos-iva">$0.00</dd></div><div class="pos-grand-total"><dt>Total + IVA</dt><dd id="pos-total">$0.00</dd></div></dl>
+        <label class="pos-field-label" for="pos-cash">Efectivo recibido ($)</label><input id="pos-cash" class="form-control pos-cash-input" type="number" min="0" max="9999999999.99" step="0.01" inputmode="decimal" placeholder="0.00">
+        <div id="pos-change-box" class="pos-change" aria-live="polite"><span id="pos-change-label">Cambio</span><strong id="pos-change">—</strong></div>
+        <button id="pos-checkout" class="btn primary-button pos-checkout" type="button" disabled>Efectuar venta</button>
+      </aside>
+    </div>
+    </div>
+    <div id="pos-orders-pane" class="pickup-pane" role="tabpanel" aria-labelledby="pos-tab-orders" hidden>
+      <label class="pos-field-label" for="pickup-search">Buscar pedido</label>
+      <input id="pickup-search" class="form-control pickup-search" type="search" name="q" placeholder="Número de pedido o nombre del estudiante" maxlength="150" autocomplete="off" hx-get="{% url 'pos_pedidos' %}" hx-vals='{"apertura":{{ apertura.pk }}}' hx-trigger="input changed delay:250ms, search" hx-target="#pickup-board" hx-swap="outerHTML" hx-sync="#pickup-board:replace">
+      <div id="pickup-network-error" class="orders-message orders-message-error" role="alert" hidden>No se pudo actualizar la lista de pedidos. Se volverá a intentar.</div>
+      <div id="pickup-board" hx-get="{% url 'pos_pedidos' %}?apertura={{ apertura.pk }}" hx-include="#pickup-search" hx-trigger="pickupRefresh from:body, every 5s" hx-swap="outerHTML" hx-sync="this:replace"><div class="orders-empty">Selecciona «Cobrar pedidos» para cargar los pedidos listos.</div></div>
+    </div>
+  </section>
+  <div id="pos-csrf" hidden>{% csrf_token %}</div>
+  {% include 'cafeteria/pos/_cobro_modal.html' %}
+  <dialog id="pos-invoice" class="pos-dialog invoice-dialog" aria-labelledby="pos-invoice-title">
+    <div class="pos-dialog-heading"><h2 id="pos-invoice-title">Factura</h2><button class="modal-close-button" type="button" data-invoice-close aria-label="Cerrar factura">×</button></div>
+    <div class="invoice-dialog-body"><div id="pos-invoice-error" class="form-alert" role="alert" hidden></div><div id="pos-invoice-content" aria-live="polite"></div></div>
+    <div class="invoice-dialog-actions"><button type="button" class="btn cancel-button" id="pos-invoice-retry" hidden>Reintentar</button><button type="button" class="btn cancel-button" data-invoice-close>Continuar</button><a class="btn primary-button" id="pos-invoice-print" target="_blank" rel="noopener">Imprimir</a></div>
+  </dialog>
+  <dialog id="pos-confirm" class="pos-dialog" aria-labelledby="pos-confirm-title"><div class="pos-dialog-heading"><h2 id="pos-confirm-title">Terminar transacción</h2></div><div class="pos-dialog-body"><div class="pos-dialog-error form-alert" role="alert" hidden></div><dl class="pos-confirm-totals"><div><dt>Total</dt><dd id="confirm-total"></dd></div><div><dt>Efectivo recibido</dt><dd id="confirm-cash"></dd></div><div><dt>Cambio</dt><dd id="confirm-change"></dd></div></dl><div class="pos-dialog-actions"><button class="btn cancel-button" id="pos-continue" type="button">Continuar vendiendo</button><button class="btn primary-button" id="pos-finish" type="button">Sí, terminar</button></div></div></dialog>
+  <dialog id="pos-closing" class="pos-dialog" aria-labelledby="pos-closing-title"><div class="pos-dialog-heading"><h2 id="pos-closing-title">Cerrar caja</h2><button type="button" class="modal-close-button" data-close-dialog aria-label="Cancelar cierre">×</button></div><div class="pos-dialog-body"><div class="pos-dialog-error form-alert" role="alert" hidden></div>
+    <form id="pos-credentials" autocomplete="off"><label class="pos-field-label" for="closing-user">Usuario que abrió la caja</label><input id="closing-user" class="form-control" name="usuario" value="{{ apertura.abierta_por.nombre }}" maxlength="150" required autocomplete="username"><label class="pos-field-label" for="closing-password">Contraseña</label><input id="closing-password" class="form-control" name="password" type="password" maxlength="256" required autocomplete="current-password"><div class="pos-dialog-actions"><button class="btn cancel-button" type="button" data-close-dialog>Cancelar</button><button class="btn primary-button" type="submit">Verificar</button></div></form>
+    <form id="pos-counting" hidden><dl class="pos-confirm-totals"><div><dt>Monto inicial</dt><dd id="closing-initial"></dd></div><div><dt>Ventas</dt><dd id="closing-sales"></dd></div><div id="closing-other-row" hidden><dt>Otros movimientos</dt><dd id="closing-other"></dd></div><div class="closing-expected"><dt>Efectivo esperado</dt><dd id="closing-expected"></dd></div></dl><label class="pos-field-label" for="closing-counted">Efectivo contado ($)</label><input id="closing-counted" class="form-control" type="number" min="0" max="9999999999.99" step="0.01" inputmode="decimal" required placeholder="0.00"><div class="pos-change" id="closing-difference-box"><span>Diferencia</span><strong id="closing-difference">—</strong></div><div class="pos-dialog-actions"><button class="btn cancel-button" type="button" data-close-dialog>Cancelar</button><button class="btn primary-button" type="submit">Realizar cierre</button></div></form>
+  </div></dialog>
+</div>
+{% endblock %}

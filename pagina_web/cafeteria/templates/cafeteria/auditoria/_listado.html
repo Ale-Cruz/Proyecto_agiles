@@ -1,0 +1,28 @@
+<section class="employees-card" id="audit-list" aria-label="Historial de auditoría">
+  <form method="get" action="{% url 'auditoria_lista' %}" class="employee-filters audit-filters" hx-get="{% url 'auditoria_lista' %}" hx-trigger="submit, filtrosCambiados" hx-target="#audit-list" hx-swap="outerHTML" hx-push-url="true" hx-sync="#audit-list:replace">
+    <div class="filter-search"><label class="visually-hidden" for="audit-usuario">Buscar responsable</label><input id="audit-usuario" type="search" name="usuario" value="{{ consulta_usuario }}" class="form-control" placeholder="Buscar responsable por usuario o correo" maxlength="150"></div>
+    <div><label class="visually-hidden" for="audit-accion">Filtrar por acción</label><select id="audit-accion" name="accion" class="form-select"><option value="">Todas las acciones</option>{% for valor, etiqueta in acciones %}<option value="{{ valor }}" {% if filtro_accion == valor %}selected{% endif %}>{{ etiqueta }}</option>{% endfor %}</select></div>
+    <div><label class="visually-hidden" for="audit-modulo">Filtrar por módulo</label><select id="audit-modulo" name="modulo" class="form-select"><option value="">Todos los módulos</option>{% for valor, etiqueta in modulos_auditoria %}<option value="{{ valor }}" {% if filtro_modulo == valor %}selected{% endif %}>{{ etiqueta }}</option>{% endfor %}</select></div>
+    <button type="submit" class="btn filter-button">Filtrar</button>
+    {% if consulta_usuario or filtro_accion or filtro_modulo %}<a class="clear-filters" href="{% url 'auditoria_lista' %}" hx-get="{% url 'auditoria_lista' %}" hx-target="#audit-list" hx-swap="outerHTML" hx-push-url="true" hx-sync="#audit-list:replace">Limpiar</a>{% endif %}
+  </form>
+  <div class="employees-count audit-count" role="status"><span>{{ page_obj.paginator.count }} registro{{ page_obj.paginator.count|pluralize }}</span><span>Más recientes primero</span></div>
+  <div class="table-responsive">
+    <table class="table employee-table audit-table">
+      <thead><tr><th scope="col">Fecha y hora</th><th scope="col">Responsable</th><th scope="col">Módulo</th><th scope="col">Acción</th><th scope="col">Descripción</th><th scope="col">Registro</th></tr></thead>
+      <tbody>{% for evento in page_obj %}
+        <tr>
+          <td><time class="audit-time" datetime="{{ evento.creado_en|date:'c' }}">{{ evento.creado_en|date:'d/m/Y' }}<small>{{ evento.creado_en|date:'H:i:s' }}</small></time></td>
+          <td>{% if evento.usuario %}<div class="employee-identity"><span class="avatar-initial">{{ evento.usuario.nombre|first|upper }}</span><div><strong>{{ evento.usuario.nombre }}</strong><small>Usuario #{{ evento.usuario_id }}</small></div></div>{% else %}<div class="audit-system"><strong>Sistema</strong><small>Acción automática</small></div>{% endif %}</td>
+          <td><span class="audit-module">{{ evento.modulo }}</span></td>
+          <td><span class="audit-action {% if evento.accion == 'Añadido' %}audit-added{% elif evento.accion == 'Eliminado/desactivado' %}audit-disabled{% else %}audit-edited{% endif %}">{{ evento.accion }}</span></td>
+          <td class="audit-description">{{ evento.descripcion }}</td>
+          <td class="audit-reference"><span>{{ evento.entidad_afectada }}</span><small>#{{ evento.registro_afectado_id }}</small></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6"><div class="empty-employees"><svg class="icon"><use href="#i-shield"/></svg><h2>No se encontraron registros</h2><p>{% if consulta_usuario or filtro_accion or filtro_modulo %}Prueba con otros filtros.{% else %}Las operaciones registradas aparecerán aquí.{% endif %}</p></div></td></tr>
+      {% endfor %}</tbody>
+    </table>
+  </div>
+  {% if page_obj.has_other_pages %}<nav class="employee-pagination" aria-label="Paginación de auditoría"><span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span><div>{% if page_obj.has_previous %}<a href="{% querystring page=page_obj.previous_page_number %}" hx-get="{% querystring page=page_obj.previous_page_number %}" hx-target="#audit-list" hx-swap="outerHTML" hx-push-url="true" hx-sync="#audit-list:replace" class="btn edit-button">Anterior</a>{% endif %}{% if page_obj.has_next %}<a href="{% querystring page=page_obj.next_page_number %}" hx-get="{% querystring page=page_obj.next_page_number %}" hx-target="#audit-list" hx-swap="outerHTML" hx-push-url="true" hx-sync="#audit-list:replace" class="btn edit-button">Siguiente</a>{% endif %}</div></nav>{% endif %}
+</section>

@@ -1,0 +1,9 @@
+{% extends 'cafeteria/panel.html' %}
+{% load static %}
+{% block title %}Pedidos · Cafetería ITCA{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'cafeteria/pedidos.css' %}"><script src="{% static 'cafeteria/pedidos.js' %}" defer></script>{% endblock %}
+{% block panel_content %}
+<div class="page-heading"><div><span class="eyebrow">COCINA</span><h1>Pedidos</h1><p class="page-description">Pulsa una comanda cuando termines de prepararla.</p></div></div>
+<div id="orders-network-error" class="orders-message orders-message-error" role="alert" hidden>No se pudo actualizar el panel. Comprueba la conexión y vuelve a intentarlo.</div>
+{% include 'cafeteria/pedidos/_panel.html' %}
+{% endblock %}

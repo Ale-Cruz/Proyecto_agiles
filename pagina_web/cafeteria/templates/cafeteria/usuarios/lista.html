@@ -1,0 +1,16 @@
+{% extends 'cafeteria/panel.html' %}
+{% block title %}Usuarios · Cafetería{% endblock %}
+{% block panel_content %}
+<div class="page-heading employee-heading">
+  <div><span class="eyebrow">ADMINISTRACIÓN</span><h1>Usuarios</h1><p class="page-description">Gestiona las cuentas de tu equipo.</p></div>
+  <a href="{% url 'usuarios_crear' %}" hx-get="{% url 'usuarios_crear' %}" hx-target="#employee-modal-content" hx-swap="innerHTML" hx-sync="#employee-modal:replace" class="btn primary-button" data-employee-form-link aria-haspopup="dialog"><span aria-hidden="true">+</span> Nuevo usuario</a>
+</div>
+<div id="employee-feedback" class="employee-feedback" role="status" aria-live="polite" tabindex="-1" hidden></div>
+<div id="employee-list-history" hx-history-elt>
+  {% include 'cafeteria/usuarios/_listado.html' %}
+</div>
+<dialog id="employee-modal" class="employee-modal" aria-labelledby="employee-modal-title">
+  <div id="employee-modal-feedback" class="employee-feedback" role="alert" hidden></div>
+  <div id="employee-modal-content"></div>
+</dialog>
+{% endblock %}

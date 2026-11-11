@@ -1,0 +1,37 @@
+/* Comandas de cocina: papel claro, lectura vertical y una acción por tarjeta. */
+.orders-section-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:24px}
+.orders-section-heading h2{display:flex;align-items:center;gap:9px;margin:0;font-size:17px;font-weight:650;color:var(--ink)}
+.orders-section-heading p{margin:8px 0 0;font-size:12px;color:#806d66;line-height:1.6}
+.orders-status-dot{width:8px;height:8px;border-radius:50%;flex:none}
+.preparation-dot{background:#d1a32f}.ready-dot{background:#6c9973}
+.orders-count{display:inline-grid;place-items:center;min-width:23px;height:23px;background:#eee8e1;color:#7b6259;border-radius:6px;font-size:11px}
+.orders-update,.orders-limit{font-size:10px;color:#8c7870;white-space:nowrap}
+.orders-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:20px;align-items:start}
+.order-ticket{margin:0;min-width:0}
+.order-ticket-button{width:100%;min-height:300px;display:flex;flex-direction:column;text-align:left;border:1px solid #e8dfd5;border-top:4px solid #d6b34c;border-radius:4px 4px 10px 10px;background:#fffefb;padding:20px 19px 17px;color:var(--ink);box-shadow:0 4px 14px #4e2c1710;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.order-ticket-button:hover{transform:translateY(-3px);box-shadow:0 8px 22px #4e2c171a}
+.order-ticket-button:focus-visible{outline:3px solid var(--forest);outline-offset:4px}
+.order-ticket-button:disabled{opacity:.65;cursor:wait;transform:none}
+.ticket-top{display:flex;justify-content:space-between;align-items:center;gap:9px;width:100%;margin-bottom:15px}
+.ticket-status{font-size:9px;letter-spacing:.5px;font-weight:650;text-transform:uppercase;color:#987420}
+.ticket-time{font-size:10px;color:#8a786b;white-space:nowrap}
+.ticket-number{font-size:23px;line-height:1.2;letter-spacing:.5px;font-weight:750;color:#462c28;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.ticket-student{display:block;margin-top:9px;font-size:13px;font-weight:600;line-height:1.5;overflow-wrap:anywhere}
+.ticket-items{display:flex;flex-direction:column;gap:15px;width:100%;border-top:1px dashed #dcd1c5;margin:20px 0 25px;padding-top:20px}
+.ticket-item{display:flex;align-items:baseline;gap:12px;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.ticket-item>b{min-width:24px;font-size:16px;color:#51382f;font-weight:750;flex:none}
+.ticket-action{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;margin-top:auto;padding-top:16px;border-top:1px dashed #dcd1c5;font-size:11px;font-weight:600;color:#8a6b30}
+.ticket-action .icon{width:16px;height:16px}
+.orders-ready-section{margin-top:43px;padding-top:28px;border-top:1px solid var(--line)}
+.orders-ready-grid{grid-template-columns:repeat(auto-fill,minmax(215px,270px))}
+.order-ticket-ready .order-ticket-button{border-top-color:#80a487;background:#fdfffc;min-height:265px}
+.order-ticket-ready .ticket-status,.order-ticket-ready .ticket-action{color:#55795b}
+.orders-empty{grid-column:1/-1;padding:45px 25px;text-align:center;border:1px dashed #dfd4c9;border-radius:9px;color:#897368;background:#ffffff70}
+.orders-empty .icon{display:block;width:30px;height:30px;margin:0 auto 13px;color:#bda187}
+.orders-empty strong{font-size:15px;color:#6f574d;font-weight:600}
+.orders-empty p{font-size:12px;margin:8px 0 0}
+.orders-empty-small{padding:24px}.orders-empty-small p{margin:0}
+.orders-message{padding:12px 16px;margin-bottom:20px;border-radius:7px;font-size:12px;line-height:1.6;background:#eaf3e8;color:#416b49;border:1px solid #d6e8d3}
+.orders-message-error{background:#fff0ed;color:#9c493c;border-color:#f0cfc8}
+@media(max-width:600px){.orders-section-heading{display:block}.orders-update,.orders-limit{display:block;margin-top:12px}.orders-grid,.orders-ready-grid{grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}.orders-section-heading h2{font-size:16px}.order-ticket-button{min-height:270px}.orders-ready-section{margin-top:30px}}
+@media(prefers-reduced-motion:reduce){.order-ticket-button{transition:none}.order-ticket-button:hover{transform:none}}

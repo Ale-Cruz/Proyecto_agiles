@@ -1,0 +1,7 @@
+{% extends 'cafeteria/panel.html' %}{% load static %}
+{% block title %}Reportes · Cafetería ITCA{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'cafeteria/reportes.css' %}?v=1">{% endblock %}
+{% block panel_content %}
+<div class="page-heading"><div><h1>Reportes</h1></div></div>
+<div class="module-grid report-cards">{% for reporte in tarjetas_reportes %}<a class="module-card module-enabled report-card" href="{{ reporte.url }}"><span class="module-icon teal"><svg class="icon" aria-hidden="true"><use href="#i-{{ reporte.icono }}"/></svg></span><div><h2>{{ reporte.titulo }}</h2><p>{{ reporte.descripcion }}</p></div><svg class="icon module-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>{% endfor %}</div>
+{% endblock %}

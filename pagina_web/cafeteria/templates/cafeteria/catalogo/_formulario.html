@@ -1,0 +1,28 @@
+{% if es_modal %}<div class="employee-modal-heading"><div><span class="eyebrow">INVENTARIO</span><h2 id="module-modal-title">{{ titulo_formulario }}</h2></div><button type="button" class="modal-close-button" data-module-close aria-label="Cerrar formulario">×</button></div>{% endif %}
+<form method="post" action="{{ request.path }}" enctype="multipart/form-data" class="employee-form-card catalog-form" {% if es_modal %}hx-post="{{ request.path }}" hx-encoding="multipart/form-data" hx-target="#module-modal-content" hx-swap="innerHTML" hx-disabled-elt="#module-modal button" hx-sync="this:drop"{% endif %}>
+  {% csrf_token %}
+  {% for oculto in form.hidden_fields %}{% if oculto.name != 'producto' %}{{ oculto }}{{ oculto.errors }}{% endif %}{% endfor %}
+  {% if form.non_field_errors %}<div class="form-alert" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+  {% if tipo_modulo == 'inventario' %}
+  <div id="inventory-product-picker" class="inventory-product-picker">
+    <label for="movement-product-query">Producto</label>
+    <input id="movement-product-query" type="search" name="producto_busqueda" class="form-control" placeholder="Buscar por nombre o código" maxlength="150" autocomplete="off" autofocus data-inventory-product-search hx-get="{% url 'inventario_producto_buscar' %}" hx-trigger="input changed delay:250ms, search" hx-target="#movement-product-results" hx-swap="innerHTML" hx-sync="#inventory-product-picker:replace">
+    <div id="movement-product-results" class="inventory-product-results" role="region" aria-label="Productos encontrados"></div>
+    <div id="stock-info">{% include 'cafeteria/catalogo/_stock_info.html' %}</div>
+    {% if form.producto.errors %}<div class="field-error" role="alert" data-inventory-product-error>{{ form.producto.errors }}</div>{% endif %}
+  </div>
+  {% endif %}
+  {% if tipo_modulo == 'productos' and objeto.foto_url %}<div class="current-product-photo"><img src="{{ objeto.foto_url }}" alt="Fotografía actual de {{ objeto.nombre }}"><span>Fotografía actual</span></div>{% endif %}
+  <div class="employee-form-grid">
+    {% for campo in form.visible_fields %}
+    <div class="field-group {% if campo.name == 'descripcion' or campo.name == 'motivo' or campo.name == 'imagen' %}full-field{% endif %}">
+      {% if campo.field.widget.input_type == 'checkbox' %}<label class="account-checkbox" for="{{ campo.id_for_label }}">{{ campo }}<span>{{ campo.label }}</span></label>{% else %}<label for="{{ campo.id_for_label }}">{{ campo.label }}</label>{{ campo }}{% endif %}
+      {% if campo.help_text %}<small class="field-help">{{ campo.help_text }}</small>{% endif %}
+      {% if campo.errors %}<div class="field-error" role="alert">{{ campo.errors }}</div>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% if tipo_modulo == 'productos' %}<p class="self-account-note">La disponibilidad aplica al POS y a los pedidos. Las cantidades se actualizan desde Inventario.{% if es_nuevo %} El stock inicial será 0.{% endif %}</p>{% if not form.fields.categoria.queryset.exists %}<p class="form-alert">Crea primero una <a href="{% url 'categorias_lista' %}">categoría activa</a>.</p>{% endif %}
+  {% elif tipo_modulo == 'categorias' %}<p class="self-account-note">Los productos de una categoría inactiva quedarán fuera de venta hasta que se reactive.</p>{% endif %}
+  <div class="employee-form-actions">{% if es_modal %}<button type="button" class="btn cancel-button" data-module-close>Cancelar</button>{% else %}<a href="{{ url_lista }}" class="btn cancel-button">Cancelar</a>{% endif %}<button type="submit" class="btn primary-button"><span class="submit-label">{% if tipo_modulo == 'inventario' %}Registrar movimiento{% else %}Guardar cambios{% endif %}</span><span class="submit-loading">Guardando…</span></button></div>
+</form>

@@ -1,0 +1,12 @@
+{% load tz %}
+<article class="invoice-paper" aria-label="Factura {{ venta.numero }}">
+  <header class="invoice-header">
+    <div class="invoice-identity"><h1>Cafetería ITCA</h1><p><span>Cajero:</span> {{ venta.cajero.nombre }}</p><p><span>Cliente:</span> {{ cliente }}</p></div>
+    <div class="invoice-reference"><p class="invoice-number-label">Número de generación</p><strong>{{ venta.numero }}</strong><p class="invoice-date-label">Fecha de creación</p><time datetime="{{ venta.creada_en|date:'c' }}">{{ venta.creada_en|localtime|date:"d/m/Y" }}</time><span class="invoice-time">{{ venta.creada_en|localtime|date:"H:i" }}</span></div>
+  </header>
+  {% if venta.estado == 'anulada' %}<p class="invoice-void">Venta anulada</p>{% endif %}
+  <table class="invoice-table"><thead><tr><th scope="col">Cant.</th><th scope="col">Descripción</th><th scope="col">Precio unitario</th><th scope="col">Importe</th></tr></thead><tbody>
+    {% for linea in lineas_factura %}<tr><td>{{ linea.cantidad }}</td><td>{{ linea.nombre }}</td><td>${{ linea.precio }}</td><td>${{ linea.importe }}</td></tr>{% endfor %}
+  </tbody></table>
+  <div class="invoice-bottom"><p class="invoice-method">Forma de pago: <strong>Efectivo</strong>{% if venta.pedido_id %}<span>Pedido: {{ venta.pedido.numero }}</span>{% endif %}</p><dl class="invoice-totals"><div><dt>Total sin IVA</dt><dd>${{ subtotal }}</dd></div><div><dt>IVA (13 %)</dt><dd>${{ iva }}</dd></div><div class="invoice-grand-total"><dt>Total + IVA</dt><dd>${{ total }}</dd></div><div class="invoice-tender"><dt>Efectivo recibido</dt><dd>${{ efectivo }}</dd></div><div><dt>Cambio</dt><dd>${{ cambio }}</dd></div></dl></div>
+</article>

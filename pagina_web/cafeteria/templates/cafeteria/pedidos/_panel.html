@@ -1,0 +1,15 @@
+<div id="orders-board" hx-get="{% url 'pedidos_lista' %}" hx-trigger="every 5s" hx-target="this" hx-swap="outerHTML" hx-sync="this:drop">
+  {% if mensaje_pedido %}<div class="orders-message {% if error_pedido %}orders-message-error{% endif %}" role="{% if error_pedido %}alert{% else %}status{% endif %}">{{ mensaje_pedido }}</div>{% endif %}
+  <section class="orders-section" aria-labelledby="preparation-title">
+    <div class="orders-section-heading"><div><h2 id="preparation-title"><span class="orders-status-dot preparation-dot"></span>En preparación <span class="orders-count">{{ pedidos_preparacion|length }}</span></h2></div></div>
+    <div class="orders-grid">
+      {% for pedido in pedidos_preparacion %}{% include 'cafeteria/pedidos/_comanda.html' with es_listo=False %}{% empty %}<div class="orders-empty"><svg class="icon" aria-hidden="true"><use href="#i-clipboard"/></svg><strong>Todo al día</strong><p>Los nuevos pedidos aparecerán aquí.</p></div>{% endfor %}
+    </div>
+  </section>
+  <section class="orders-section orders-ready-section" aria-labelledby="ready-title">
+    <div class="orders-section-heading"><div><h2 id="ready-title"><span class="orders-status-dot ready-dot"></span>Últimos listos <span class="orders-count">{{ pedidos_listos|length }}</span></h2><p>¿Un clic por error? Pulsa la comanda para devolverla a preparación.</p></div><span class="orders-limit">Hasta 3 pedidos</span></div>
+    <div class="orders-grid orders-ready-grid">
+      {% for pedido in pedidos_listos %}{% include 'cafeteria/pedidos/_comanda.html' with es_listo=True %}{% empty %}<div class="orders-empty orders-empty-small"><p>Aún no hay pedidos listos para recoger.</p></div>{% endfor %}
+    </div>
+  </section>
+</div>

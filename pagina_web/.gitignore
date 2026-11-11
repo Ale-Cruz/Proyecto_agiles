@@ -1,0 +1,8 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+staticfiles/
+media/
+*.log
+.local_backups/

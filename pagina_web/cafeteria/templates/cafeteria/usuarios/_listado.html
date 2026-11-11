@@ -1,0 +1,21 @@
+<section class="employees-card" id="employee-list" aria-label="Empleados" hx-get="{{ request.get_full_path }}" hx-trigger="empleadoGuardado from:body" hx-target="this" hx-swap="outerHTML" hx-sync="this:replace">
+  <form method="get" action="{% url 'usuarios_lista' %}" class="employee-filters" hx-get="{% url 'usuarios_lista' %}" hx-trigger="submit, filtrosCambiados" hx-target="#employee-list" hx-swap="outerHTML" hx-push-url="true" hx-sync="#employee-list:replace">
+    <div class="filter-search"><label class="visually-hidden" for="buscar">Buscar usuario</label><input id="buscar" name="q" value="{{ consulta }}" placeholder="Buscar usuario o correo" class="form-control" maxlength="150" type="search"></div>
+    <div><label class="visually-hidden" for="rol">Filtrar por rol</label><select name="rol" id="rol" class="form-select"><option value="">Todos los roles</option value="administrador" {% if filtro_rol == 'administrador' %}selected{% endif %}>Administrador</option><option value="cajero" {% if filtro_rol == 'cajero' %}selected{% endif %}>Cajero</option></select></div>
+    <div><label class="visually-hidden" for="estado">Filtrar por estado</label><select name="estado" id="estado" class="form-select"><option value="">Todos los estados</option><option value="activo" {% if filtro_estado == 'activo' %}selected{% endif %}>Habilitados</option><option value="inactivo" {% if filtro_estado == 'inactivo' %}selected{% endif %}>Deshabilitados</option></select></div>
+    <button type="submit" class="btn filter-button">Filtrar</button>
+    {% if consulta or filtro_rol or filtro_estado %}<a class="clear-filters" href="{% url 'usuarios_lista' %}" hx-get="{% url 'usuarios_lista' %}" hx-target="#employee-list" hx-swap="outerHTML" hx-push-url="true" hx-sync="#employee-list:replace">Limpiar</a>{% endif %}
+  </form>
+  <div class="employees-count">{{ page_obj.paginator.count }} usuario{{ page_obj.paginator.count|pluralize }}</div>
+  <div class="table-responsive">
+    <table class="table employee-table"><thead><tr><th scope="col">Usuario</th><th scope="col">Correo</th><th scope="col">Rol</th><th scope="col">Estado</th><th scope="col" class="actions-column">Acciones</th></tr></thead>
+      <tbody>{% for empleado in page_obj %}<tr>
+        <td><div class="employee-identity"><span class="avatar-initial">{{ empleado.nombre|first|upper }}</span><div><strong>{{ empleado.nombre }}</strong>{% if empleado.es_cuenta_principal %}<small>Cuenta principal</small>{% elif empleado.pk == request.user.pk %}<small>Tu cuenta</small>{% endif %}</div></div></td>
+        <td class="employee-email">{{ empleado.correo }}</td><td><span class="role-label {% if empleado.rol == 'administrador' %}role-admin{% endif %}">{{ empleado.get_rol_display }}</span></td>
+        <td><span class="status-label {% if empleado.habilitado %}enabled{% endif %}"><span></span>{% if empleado.habilitado %}Habilitado{% else %}Deshabilitado{% endif %}</span></td>
+        <td class="actions-column"><a href="{% url 'usuarios_editar' empleado.pk %}" hx-get="{% url 'usuarios_editar' empleado.pk %}" hx-target="#employee-modal-content" hx-swap="innerHTML" hx-sync="#employee-modal:replace" class="btn edit-button" aria-label="Editar {{ empleado.nombre }}" data-employee-form-link aria-haspopup="dialog">Editar</a></td>
+      </tr>{% empty %}<tr><td colspan="5"><div class="empty-employees"><svg class="icon"><use href="#i-users"/></svg><h2>No se encontraron usuarios</h2><p>Prueba con otra búsqueda o agrega un empleado.</p></div></td></tr>{% endfor %}</tbody>
+    </table>
+  </div>
+  {% if page_obj.has_other_pages %}<nav class="employee-pagination" aria-label="Paginación"><span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span><div>{% if page_obj.has_previous %}<a href="{% querystring page=page_obj.previous_page_number %}" hx-get="{% querystring page=page_obj.previous_page_number %}" hx-target="#employee-list" hx-swap="outerHTML" hx-push-url="true" hx-sync="#employee-list:replace" class="btn edit-button">Anterior</a>{% endif %}{% if page_obj.has_next %}<a href="{% querystring page=page_obj.next_page_number %}" hx-get="{% querystring page=page_obj.next_page_number %}" hx-target="#employee-list" hx-swap="outerHTML" hx-push-url="true" hx-sync="#employee-list:replace" class="btn edit-button">Siguiente</a>{% endif %}</div></nav>{% endif %}
+</section>

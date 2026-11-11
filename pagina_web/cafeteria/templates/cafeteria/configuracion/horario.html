@@ -1,0 +1,18 @@
+{% extends 'cafeteria/panel.html' %}{% load static %}
+{% block title %}Configuración · Cafetería ITCA{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'cafeteria/reportes.css' %}?v=1"><script src="{% static 'cafeteria/configuracion.js' %}?v=1" defer></script>{% endblock %}
+{% block panel_content %}
+<div class="page-heading"><div><h1>Configuración de horario</h1></div></div>
+<form method="post" class="employees-card settings-card" id="schedule-form" data-initial-enabled="{{ horario_habilitado|yesno:'true,false' }}">
+  {% csrf_token %}{{ form.version }}
+  {% if form.non_field_errors or form.version.errors %}<div class="form-alert" role="alert">{{ form.non_field_errors }}{{ form.version.errors }}</div>{% endif %}
+  {% if horarios_distintos %}<div class="form-alert">Hay horarios previos diferentes. Al guardar se aplicará un único horario de lunes a viernes.</div>{% endif %}
+  <label class="account-checkbox" for="schedule-enabled">{{ form.horarios_habilitados }}<span>Activar horario</span></label>
+  <p class="schedule-days">Pedidos de lunes a viernes</p>
+  <fieldset class="schedule-fields" id="schedule-fields" {% if not form.horarios_habilitados.value %}disabled{% endif %}>
+    <div><label for="{{ form.hora_inicio.id_for_label }}">Inicia</label>{{ form.hora_inicio }}{% for error in form.hora_inicio.errors %}<span class="report-field-error" role="alert">{{ error }}</span>{% endfor %}</div>
+    <div><label for="{{ form.hora_fin.id_for_label }}">Termina</label>{{ form.hora_fin }}{% for error in form.hora_fin.errors %}<span class="report-field-error" role="alert">{{ error }}</span>{% endfor %}</div>
+  </fieldset>
+  <button class="btn primary-button" type="submit" id="schedule-submit" {% if not form.horarios_habilitados.value and not horario_habilitado %}disabled{% endif %}>Aplicar horario</button>
+</form>
+{% endblock %}
